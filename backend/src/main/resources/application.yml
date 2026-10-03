@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: idle-card-game
+  datasource:
+    # DB 접속 정보는 민감정보라 yml에 직접 쓰지 않고, 외부(환경변수)에서 주입받는다.
+    # 로컬 실행: IntelliJ 기준 Run Configuration의 Environment variables에 DB_URL/DB_USERNAME/DB_PASSWORD를 설정.
+    # 배포 환경: 서버/컨테이너의 환경변수로 동일한 이름을 설정.
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+  jackson:
+    default-property-inclusion: non_null
+
+logging:
+  level:
+    org.hibernate.SQL: info
