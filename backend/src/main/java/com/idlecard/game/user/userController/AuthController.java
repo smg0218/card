@@ -40,8 +40,8 @@ public class AuthController {
     }
 
     @GetMapping("/users/{id}")
-    public UserInfoResponse userInfo(@PathVariable String id) {
-        return authService.getUserInfo(id);
+    public UserInfoResponse findUserInfo(@PathVariable String id) {
+        return authService.findUserInfo(id);
     }
 
     @PostMapping("/change-password")

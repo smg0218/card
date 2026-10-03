@@ -43,7 +43,7 @@ public class CardCatalogService {
         this.byGrade = defs.stream().collect(Collectors.groupingBy(CardDefinition::getGrade));
     }
 
-    public CardDefinition getOrThrow(Long id) {
+    public CardDefinition findOrThrow(Long id) {
         CardDefinition def = byId.get(id);
         if (def == null) {
             throw new IllegalStateException("존재하지 않는 카드 정의입니다: " + id);

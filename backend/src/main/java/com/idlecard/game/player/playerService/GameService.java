@@ -81,7 +81,7 @@ public class GameService {
     private static final int STARTER_CARD_COUNT = 3;
 
     @Transactional
-    public Player createPlayer() {
+    public Player insertPlayer() {
         Player player = Player.createNew();
         playerRepository.save(player);
         for (int i = 0; i < player.getSlotCount(); i++) {
@@ -107,7 +107,7 @@ public class GameService {
     }
 
     @Transactional
-    public PlayerStateResponse getState(UUID playerId) {
+    public PlayerStateResponse findState(UUID playerId) {
         Ticked t = tick(playerId);
         double production = synergyService.totalProductionPerMinute(t.slots())
                 * eventProductionMultiplier(t.player(), Instant.now());
@@ -116,14 +116,14 @@ public class GameService {
 
     /** 한 번의 호출로 상태/보유카드/슬롯/시너지를 모두 반환한다 (프론트 왕복 횟수 절감). */
     @Transactional
-    public GameStateResponse getFullState(UUID playerId) {
+    public GameStateResponse findFullState(UUID playerId) {
         Ticked t = tick(playerId);
         return buildState(t.player(), t.slots());
     }
 
     /** 경과 시간만큼 골드를 정산하고 lastTickAt을 갱신한다 (오프라인 보상 포함). slots는 재사용을 위해 함께 반환. */
     private Ticked tick(UUID playerId) {
-        Player player = getPlayerOrThrow(playerId);
+        Player player = findPlayerOrThrow(playerId);
         List<Slot> slots = slotRepository.findByPlayerIdOrderBySlotIndexAsc(playerId);
         Instant now = Instant.now();
         Duration elapsed = Duration.between(player.getLastTickAt(), now);
@@ -242,7 +242,7 @@ public class GameService {
 
         List<SlotDto> slotDtos = slots.stream().map(this::toSlotDto).toList();
         List<PlayerCardDto> cardDtos = owned.stream()
-                .map(pc -> PlayerCardDto.from(pc, cardCatalogService.getOrThrow(pc.getCardDefinitionId()),
+                .map(pc -> PlayerCardDto.from(pc, cardCatalogService.findOrThrow(pc.getCardDefinitionId()),
                         findSlotIndex(slots, pc.getId())))
                 .toList();
 
@@ -356,7 +356,7 @@ public class GameService {
         playerCardRepository.save(card);
         playerRepository.save(player);
 
-        CardDefinition def = cardCatalogService.getOrThrow(card.getCardDefinitionId());
+        CardDefinition def = cardCatalogService.findOrThrow(card.getCardDefinitionId());
         Integer slotIndex = findSlotIndex(t.slots(), card.getId());
         GameStateResponse state = buildState(player, t.slots());
 
@@ -390,7 +390,7 @@ public class GameService {
                     "분해할 복사본이 부족합니다. (요청: " + count + ", 보유: " + card.getSpareCopies() + ")");
         }
 
-        CardDefinition def = cardCatalogService.getOrThrow(card.getCardDefinitionId());
+        CardDefinition def = cardCatalogService.findOrThrow(card.getCardDefinitionId());
         int shardsGained = CardShardTable.shredYield(def.getGrade()) * count;
 
         card.setSpareCopies(card.getSpareCopies() - count);
@@ -412,7 +412,7 @@ public class GameService {
     private CraftResult doCraftCard(UUID playerId, Long cardDefinitionId) {
         Ticked t = tick(playerId);
         Player player = t.player();
-        CardDefinition def = cardCatalogService.getOrThrow(cardDefinitionId);
+        CardDefinition def = cardCatalogService.findOrThrow(cardDefinitionId);
         int cost = CardShardTable.craftCost(def.getGrade());
 
         if (player.getCardShards() < cost) {
@@ -570,7 +570,7 @@ public class GameService {
         if (s.getPlayerCard() == null) {
             return new SlotDto(s.getSlotIndex(), null);
         }
-        CardDefinition def = cardCatalogService.getOrThrow(s.getPlayerCard().getCardDefinitionId());
+        CardDefinition def = cardCatalogService.findOrThrow(s.getPlayerCard().getCardDefinitionId());
         return new SlotDto(s.getSlotIndex(), PlayerCardDto.from(s.getPlayerCard(), def, s.getSlotIndex()));
     }
 
@@ -615,7 +615,7 @@ public class GameService {
                 .orElse(null);
     }
 
-    private Player getPlayerOrThrow(UUID playerId) {
+    private Player findPlayerOrThrow(UUID playerId) {
         return playerRepository.findById(playerId)
                 .orElseThrow(() -> new EntityNotFoundException("플레이어를 찾을 수 없습니다: " + playerId));
     }

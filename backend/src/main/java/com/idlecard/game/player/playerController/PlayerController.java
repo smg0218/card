@@ -17,13 +17,13 @@ public class PlayerController {
     private final GameService gameService;
 
     @GetMapping("/{playerId}")
-    public PlayerStateResponse getState(@PathVariable UUID playerId) {
-        return gameService.getState(playerId);
+    public PlayerStateResponse findState(@PathVariable UUID playerId) {
+        return gameService.findState(playerId);
     }
 
     @GetMapping("/{playerId}/game-state")
-    public GameStateResponse getFullState(@PathVariable UUID playerId) {
-        return gameService.getFullState(playerId);
+    public GameStateResponse findFullState(@PathVariable UUID playerId) {
+        return gameService.findFullState(playerId);
     }
 
     @PostMapping("/{playerId}/draw")

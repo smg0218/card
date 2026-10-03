@@ -62,7 +62,7 @@ public class AuthService {
             throw new IllegalStateException("이미 사용 중인 닉네임입니다.");
         }
 
-        Player player = gameService.createPlayer();
+        Player player = gameService.insertPlayer();
 
         AppUser user = new AppUser();
         user.setId(id);
@@ -88,7 +88,7 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public UserInfoResponse getUserInfo(String id) {
+    public UserInfoResponse findUserInfo(String id) {
         AppUser user = appUserRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 계정입니다."));
         Player player = playerRepository.findById(user.getPlayerId())

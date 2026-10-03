@@ -29,7 +29,7 @@ public class SynergyService {
         // 1. 태그 카운트 (시너지 제외 카드는 카운트에서 빠짐)
         Map<String, Integer> tagCounts = new TreeMap<>();
         for (Slot s : placed) {
-            CardDefinition def = cardCatalogService.getOrThrow(s.getPlayerCard().getCardDefinitionId());
+            CardDefinition def = cardCatalogService.findOrThrow(s.getPlayerCard().getCardDefinitionId());
             if (def.isExcludeFromTagSynergy()) continue;
             for (String tag : def.getTags()) {
                 tagCounts.merge(tag, 1, Integer::sum);
@@ -47,7 +47,7 @@ public class SynergyService {
         // 6개 등급(COMMON~LEGENDARY)을 전부 보유해야 활성화된다.
         Set<CardGrade> gradesPresent = new HashSet<>();
         for (Slot s : placed) {
-            CardDefinition def = cardCatalogService.getOrThrow(s.getPlayerCard().getCardDefinitionId());
+            CardDefinition def = cardCatalogService.findOrThrow(s.getPlayerCard().getCardDefinitionId());
             gradesPresent.add(def.getGrade());
         }
         boolean gradeSynergyActive = gradesPresent.containsAll(List.of(CardGrade.values()));
@@ -56,7 +56,7 @@ public class SynergyService {
         record Buff(String targetTag, double bonusPercent) {}
         List<Buff> buffs = new ArrayList<>();
         for (Slot s : placed) {
-            CardDefinition def = cardCatalogService.getOrThrow(s.getPlayerCard().getCardDefinitionId());
+            CardDefinition def = cardCatalogService.findOrThrow(s.getPlayerCard().getCardDefinitionId());
             if (def.getBuffTargetTag() != null && def.getBuffBonusPercent() != 0) {
                 buffs.add(new Buff(def.getBuffTargetTag(), def.getBuffBonusPercent()));
             }
@@ -67,7 +67,7 @@ public class SynergyService {
         double total = 0;
         for (Slot s : placed) {
             PlayerCard pc = s.getPlayerCard();
-            CardDefinition def = cardCatalogService.getOrThrow(pc.getCardDefinitionId());
+            CardDefinition def = cardCatalogService.findOrThrow(pc.getCardDefinitionId());
 
             double base = def.getBaseProductionPerMinute() * UpgradeTable.multiplierFor(pc.getStarLevel());
 
