@@ -621,8 +621,12 @@ body {
   color: #c0392b;
 }
 
-.grade-normal {
+.grade-common {
   background: linear-gradient(160deg, #cfd6e6, #a9b2cc);
+}
+
+.grade-uncommon {
+  background: linear-gradient(160deg, #a0e6a8, #5fbf6e);
 }
 
 .grade-rare {
@@ -631,6 +635,10 @@ body {
 
 .grade-unique {
   background: linear-gradient(160deg, #d7a6ff, #a768e6);
+}
+
+.grade-epic {
+  background: linear-gradient(160deg, #ff9ad1, #e0529a);
 }
 
 .grade-legendary {

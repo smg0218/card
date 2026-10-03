@@ -1,6 +1,6 @@
 const API_BASE = "http://localhost:8080/api";
 
-export type CardGrade = "NORMAL" | "RARE" | "UNIQUE" | "LEGENDARY";
+export type CardGrade = "COMMON" | "UNCOMMON" | "RARE" | "UNIQUE" | "EPIC" | "LEGENDARY";
 
 export interface CardDefinitionDto {
   id: number;

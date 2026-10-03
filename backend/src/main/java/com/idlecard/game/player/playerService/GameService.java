@@ -49,18 +49,22 @@ public class GameService {
     private static final double OFFLINE_PRODUCTION_RATE = 0.8;
     private static final double OFFLINE_MAX_MINUTES = 12 * 60;
 
+    /** 등급 순서: COMMON < UNCOMMON < RARE < UNIQUE < EPIC < LEGENDARY. */
     private static final Map<CardGrade, Double> GRADE_RATE = Map.of(
-            CardGrade.NORMAL, 0.70,
-            CardGrade.RARE, 0.20,
-            CardGrade.UNIQUE, 0.08,
-            CardGrade.LEGENDARY, 0.02
+            CardGrade.COMMON, 0.62,
+            CardGrade.UNCOMMON, 0.25,
+            CardGrade.RARE, 0.10,
+            CardGrade.UNIQUE, 0.025,
+            CardGrade.EPIC, 0.004,
+            CardGrade.LEGENDARY, 0.001
     );
 
-    /** 고급 뽑기: 노멀을 제외하고 레어/유니크/전설의 기존 비율(20:8:2)을 유지한 채 재분배한다. */
+    /** 고급 뽑기: COMMON/UNCOMMON 제외. UNIQUE/EPIC/LEGENDARY는 고정값으로 지정하고 나머지는 전부 RARE. */
     private static final Map<CardGrade, Double> PREMIUM_GRADE_RATE = Map.of(
-            CardGrade.RARE, 20.0 / 30.0,
-            CardGrade.UNIQUE, 8.0 / 30.0,
-            CardGrade.LEGENDARY, 2.0 / 30.0
+            CardGrade.RARE, 0.86,
+            CardGrade.UNIQUE, 0.10,
+            CardGrade.EPIC, 0.035,
+            CardGrade.LEGENDARY, 0.005
     );
 
     private final PlayerRepository playerRepository;
@@ -85,7 +89,7 @@ public class GameService {
         }
 
         // 모두에게 동일한 출발선을 주기 위해 골드 없이, 노멀 등급 카드 3장만 고정으로 지급한다.
-        List<CardDefinition> starters = cardCatalogService.byGrade(CardGrade.NORMAL).stream()
+        List<CardDefinition> starters = cardCatalogService.byGrade(CardGrade.COMMON).stream()
                 .sorted(java.util.Comparator.comparing(CardDefinition::getId))
                 .limit(STARTER_CARD_COUNT)
                 .toList();

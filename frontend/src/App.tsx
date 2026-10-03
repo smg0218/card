@@ -18,9 +18,11 @@ import AuthScreen from "./AuthScreen";
 const AUTH_KEY = "idle-card-game.auth";
 
 const GRADE_LABEL: Record<string, string> = {
-  NORMAL: "노멀",
+  COMMON: "커먼",
+  UNCOMMON: "언커먼",
   RARE: "레어",
   UNIQUE: "유니크",
+  EPIC: "에픽",
   LEGENDARY: "전설",
 };
 
@@ -904,7 +906,7 @@ function ShredModal({
   );
 }
 
-const GRADE_FILTERS: (CardGrade | "ALL")[] = ["ALL", "NORMAL", "RARE", "UNIQUE", "LEGENDARY"];
+const GRADE_FILTERS: (CardGrade | "ALL")[] = ["ALL", "COMMON", "UNCOMMON", "RARE", "UNIQUE", "EPIC", "LEGENDARY"];
 
 function CraftShopModal({
   catalog,

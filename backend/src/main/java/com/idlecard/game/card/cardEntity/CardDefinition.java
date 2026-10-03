@@ -32,7 +32,7 @@ public class CardDefinition {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @Comment("카드 등급 (NORMAL/RARE/UNIQUE/LEGENDARY).")
+    @Comment("카드 등급 (COMMON/UNCOMMON/RARE/UNIQUE/EPIC/LEGENDARY).")
     private CardGrade grade;
 
     @ElementCollection(fetch = FetchType.EAGER)

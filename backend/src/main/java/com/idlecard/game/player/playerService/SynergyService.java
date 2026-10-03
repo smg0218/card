@@ -44,13 +44,13 @@ public class SynergyService {
 
         // 3. 등급 시너지: 왕/여왕처럼 "등급 시너지 적용 불가"인 카드도 해당 등급 칸을 채운 것으로는
         // 인정한다. 다만 그 카드 자신은 아래에서 gradeMultiplier 계산 시 보너스를 받지 못한다.
+        // 6개 등급(COMMON~LEGENDARY)을 전부 보유해야 활성화된다.
         Set<CardGrade> gradesPresent = new HashSet<>();
         for (Slot s : placed) {
             CardDefinition def = cardCatalogService.getOrThrow(s.getPlayerCard().getCardDefinitionId());
             gradesPresent.add(def.getGrade());
         }
-        boolean gradeSynergyActive = gradesPresent.containsAll(
-                List.of(CardGrade.NORMAL, CardGrade.RARE, CardGrade.UNIQUE, CardGrade.LEGENDARY));
+        boolean gradeSynergyActive = gradesPresent.containsAll(List.of(CardGrade.values()));
 
         // 4. 버프 카드 효과 수집 (드루이드, 왕 등)
         record Buff(String targetTag, double bonusPercent) {}

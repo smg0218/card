@@ -12,16 +12,20 @@ import java.util.Map;
 public final class CardShardTable {
 
     private static final Map<CardGrade, Integer> SHRED_YIELD = Map.of(
-            CardGrade.NORMAL, 3,
+            CardGrade.COMMON, 3,
+            CardGrade.UNCOMMON, 5,
             CardGrade.RARE, 8,
             CardGrade.UNIQUE, 20,
+            CardGrade.EPIC, 35,
             CardGrade.LEGENDARY, 50
     );
 
     private static final Map<CardGrade, Integer> CRAFT_COST = Map.of(
-            CardGrade.NORMAL, 15,
+            CardGrade.COMMON, 15,
+            CardGrade.UNCOMMON, 30,
             CardGrade.RARE, 50,
             CardGrade.UNIQUE, 150,
+            CardGrade.EPIC, 250,
             CardGrade.LEGENDARY, 400
     );
 
