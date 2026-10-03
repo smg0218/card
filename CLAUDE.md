@@ -68,6 +68,26 @@ config/      — 전역 설정 (WebConfig / CORS)
 
 앱은 주기적으로 백엔드를 폴링합니다 (`GameService`의 `ONLINE_TICK_GAP_SECONDS` 관련 주석 참고 — 그 간격보다 빠르게 폴링하는 것을 백엔드가 "온라인"으로, 그보다 느리면 "오프라인/접속 끊김"으로 간주하는 기준입니다).
 
+## 메서드 명명 규칙
+
+레이어에 따라 규칙이 다르다.
+
+### Repository — Spring Data JPA 명명 규칙을 따른다
+- `JpaRepository`가 제공하는 메서드(`save`, `findById`, `findAll`, `existsById`, `deleteById` 등)는 그대로 사용한다.
+- 커스텀 조회는 Spring Data의 파생 쿼리(derived query) 규칙을 따른다: `findBy...`, `existsBy...`, `countBy...`, `deleteBy...` + 조건(`And`, `Or`, `In`, `OrderBy...Asc/Desc`, `Top N` 등). 예: `findByPlayerIdAndSlotIndex`, `findTop50ByOrderByTotalGoldEarnedDesc`.
+- `@Query`를 직접 작성하는 경우에도 메서드명은 위와 같은 `findBy...` 형태로 짓는다.
+
+### Service / Controller — 동작에 따라 접두사를 통일한다
+
+| 동작 | 접두사 |
+|---|---|
+| 조회 | `find...` |
+| 추가 | `insert...` |
+| 수정 | `update...` |
+| 삭제 | `delete...` |
+
+데이터 조회/추가/수정/삭제 성격의 Service·Controller 메서드(내부 `private` 헬퍼 포함)에 적용한다. `draw`, `upgrade`, `shredCard`처럼 게임 액션 자체를 나타내는 메서드는 CRUD로 환원되지 않으므로 액션 이름을 그대로 쓴다.
+
 ## 커밋 메시지 규칙
 
 ### 6가지 규칙
